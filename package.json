@@ -7,8 +7,8 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
-    "db:seed": "tsx db/seeds/index.ts",
-    "db:verify": "tsx db/verify.ts"
+    "db:seed": "ts-node db/prisma/seed.ts",
+    "db:verify": "ts-node db/prisma/verify.ts"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.1",

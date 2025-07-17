@@ -1,0 +1,1 @@
+-- SQL migration file for initial migration
