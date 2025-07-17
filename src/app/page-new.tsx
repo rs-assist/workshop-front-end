@@ -30,36 +30,33 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white flex flex-col">
+    <div className="h-screen bg-gradient-to-br from-gray-900 via-black to-gray-900 text-white overflow-hidden">
       {/* Background overlay */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-cyan-400/10 via-transparent to-transparent" />
       <div className="absolute inset-0 bg-[linear-gradient(45deg,_transparent_48%,_rgba(6,182,212,0.03)_49%,_rgba(6,182,212,0.03)_51%,_transparent_52%)] bg-[length:20px_20px]" />
       
-      <div className="relative flex flex-col h-full">
+      <div className="relative flex h-full">
         {/* Header */}
-        <div className="z-50 flex-shrink-0">
+        <div className="absolute top-0 left-0 right-0 z-50">
           <Header sidebarCollapsed={sidebarCollapsed} toggleSidebar={toggleSidebar} />
         </div>
 
-        {/* Main Layout */}
-        <div className="flex flex-1 min-h-0">
-          {/* Sidebar */}
-          <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 ease-in-out flex-shrink-0`}>
-            <Sidebar 
-              activeSection={activeSection} 
-              navigateToSection={navigateToSection} 
-              sidebarCollapsed={sidebarCollapsed} 
-            />
-          </div>
+        {/* Sidebar */}
+        <div className={`${sidebarCollapsed ? 'w-16' : 'w-64'} transition-all duration-300 ease-in-out mt-16`}>
+          <Sidebar 
+            activeSection={activeSection} 
+            navigateToSection={navigateToSection} 
+            sidebarCollapsed={sidebarCollapsed} 
+          />
+        </div>
 
-          {/* Main Content */}
-          <div className="flex-1 min-w-0">
-            <MainContent sidebarCollapsed={sidebarCollapsed}>
-              <div className="p-6">
-                {renderContent()}
-              </div>
-            </MainContent>
-          </div>
+        {/* Main Content */}
+        <div className="flex-1 mt-16">
+          <MainContent sidebarCollapsed={sidebarCollapsed}>
+            <div className="p-6">
+              {renderContent()}
+            </div>
+          </MainContent>
         </div>
       </div>
     </div>
