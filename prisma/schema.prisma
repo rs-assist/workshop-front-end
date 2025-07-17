@@ -39,7 +39,7 @@ model Agent {
 }
 
 enum RiskLevel {
-  low
+  low1
   medium
   high
   critical
