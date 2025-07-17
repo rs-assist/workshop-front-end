@@ -1,0 +1,1 @@
+Install Prisma and SQLite. Generate me the schema files for every entity you can find throughout the application and implement them. Use whatever you think it fits for local use and not for deployment. Whatever is the simplest solution. Ask me for any thing you see it fit! Complete the configuration.
