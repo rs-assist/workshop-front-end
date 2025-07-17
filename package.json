@@ -9,6 +9,7 @@
     "start": "next start",
     "db:migrate": "npx prisma migrate dev --schema=db/prisma/schema.prisma",
     "db:generate": "npx prisma generate --schema=db/prisma/schema.prisma",
+    "db:studio": "npx prisma studio --schema=db/prisma/schema.prisma",
     "db:seed": "ts-node db/prisma/seed.ts",
     "db:verify": "ts-node db/prisma/verify.ts"
   },
