@@ -9,6 +9,7 @@ import { PageSubtitle } from "@/app/components/page-subtitle"
 import { OptStats } from "./components/opt-stats"
 import { OptList } from "./components/opt-list"
 import { OptDetailModal } from "./components/opt-detail-modal"
+import { NewOperationModal } from "./components/new-operation-modal"
 
 // Extended operation type with parsed objectives
 interface ExtendedOperation extends Omit<Operation, 'status' | 'priority'> {
@@ -22,37 +23,46 @@ export default function OperationsPage() {
   const [operations, setOperations] = useState<ExtendedOperation[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [showNewOperationModal, setShowNewOperationModal] = useState(false)
 
   // Fetch operations from the API
-  useEffect(() => {
-    const fetchOperations = async () => {
-      try {
-        // Add small delay to demonstrate loading state
-        await new Promise(resolve => setTimeout(resolve, 1000))
-        
-        const response = await fetch('/api/operations')
-        if (!response.ok) {
-          throw new Error('Failed to fetch operations')
-        }
-        const data: Operation[] = await response.json()
-        
-        // Transform API data to parse objectives
-        const transformedOperations: ExtendedOperation[] = data.map((op) => ({
-          ...op,
-          parsedObjectives: JSON.parse(op.objectives || '[]'),
-        }))
-        
-        setOperations(transformedOperations)
-      } catch (error) {
-        console.error('Error fetching operations:', error)
-        setError('Failed to load operations')
-      } finally {
-        setLoading(false)
+  const fetchOperations = async () => {
+    try {
+      const response = await fetch('/api/operations')
+      if (!response.ok) {
+        throw new Error('Failed to fetch operations')
       }
+      const data: Operation[] = await response.json()
+      
+      // Transform API data to parse objectives
+      const transformedOperations: ExtendedOperation[] = data.map((op) => ({
+        ...op,
+        parsedObjectives: JSON.parse(op.objectives || '[]'),
+      }))
+      
+      setOperations(transformedOperations)
+    } catch (error) {
+      console.error('Error fetching operations:', error)
+      setError('Failed to load operations')
+    }
+  }
+
+  useEffect(() => {
+    const loadOperations = async () => {
+      setLoading(true)
+      // Add small delay to demonstrate loading state
+      await new Promise(resolve => setTimeout(resolve, 1000))
+      await fetchOperations()
+      setLoading(false)
     }
     
-    fetchOperations()
+    loadOperations()
   }, [])
+
+  const handleOperationCreated = () => {
+    setLoading(true)
+    fetchOperations().finally(() => setLoading(false))
+  }
 
   if (loading) {
     return <OperationsLoading />
@@ -77,7 +87,12 @@ export default function OperationsPage() {
           <PageSubtitle>Mission planning and execution oversight</PageSubtitle>
         </div>
         <div className="flex gap-2">
-          <Button className="bg-orange-500 hover:bg-orange-600 text-white">New Operation</Button>
+          <Button 
+            onClick={() => setShowNewOperationModal(true)}
+            className="bg-orange-500 hover:bg-orange-600 text-white"
+          >
+            New Operation
+          </Button>
           <Button className="bg-orange-500 hover:bg-orange-600 text-white">Mission Brief</Button>
         </div>
       </div>
@@ -86,7 +101,17 @@ export default function OperationsPage() {
 
       <OptList operations={operations} onSelectOperation={setSelectedOperation} />
 
-      <OptDetailModal operation={selectedOperation} onClose={() => setSelectedOperation(null)} />
+      <OptDetailModal 
+        operation={selectedOperation} 
+        onClose={() => setSelectedOperation(null)}
+        onOperationDeleted={fetchOperations}
+      />
+      
+      <NewOperationModal 
+        open={showNewOperationModal} 
+        onClose={() => setShowNewOperationModal(false)}
+        onOperationCreated={handleOperationCreated}
+      />
     </div>
   )
 }

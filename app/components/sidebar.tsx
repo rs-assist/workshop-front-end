@@ -1,6 +1,6 @@
 "use client"
 
-import { ChevronRight, Monitor, Settings, Shield, Target, Users } from "lucide-react"
+import { ChevronRight, Monitor, Settings, Shield, Target, Users, Zap, Gamepad2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 
 interface SidebarStats {
@@ -54,17 +54,27 @@ export function Sidebar({
             { id: "operations", icon: Target, label: "OPERATIONS" },
             { id: "intelligence", icon: Shield, label: "INTELLIGENCE" },
             { id: "systems", icon: Settings, label: "SYSTEMS" },
+            { id: "nuclear", icon: Zap, label: "NUCLEAR STRIKE", special: true },
+            { id: "snake", icon: Gamepad2, label: "SNAKE TRAINING", game: true },
           ].map((item) => (
             <button
               key={item.id}
               onClick={() => setActiveSection(item.id)}
               className={`w-full flex items-center gap-3 p-3 rounded transition-colors ${
                 activeSection === item.id
-                  ? "bg-orange-500 text-white"
-                  : "text-neutral-400 hover:text-white hover:bg-neutral-800"
+                  ? item.special 
+                    ? "bg-red-600 text-white animate-pulse" 
+                    : item.game
+                      ? "bg-green-600 text-white animate-bounce"
+                      : "bg-orange-500 text-white"
+                  : item.special
+                    ? "text-red-400 hover:text-white hover:bg-red-800 animate-pulse"
+                    : item.game
+                      ? "text-green-400 hover:text-white hover:bg-green-800 animate-pulse"
+                      : "text-neutral-400 hover:text-white hover:bg-neutral-800"
               }`}
             >
-              <item.icon className="w-5 h-5 md:w-5 md:h-5 sm:w-6 sm:h-6" />
+              <item.icon className={`w-5 h-5 md:w-5 md:h-5 sm:w-6 sm:h-6 ${item.special ? 'animate-bounce' : item.game ? 'animate-pulse' : ''}`} />
               {!sidebarCollapsed && <span className="text-sm font-medium">{item.label}</span>}
             </button>
           ))}

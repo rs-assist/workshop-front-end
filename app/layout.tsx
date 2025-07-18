@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import './globals.css'
+import { Toaster } from "@/components/ui/toaster"
 
 export const metadata: Metadata = {
   title: 'Tactical Operations Dashboard',
@@ -16,6 +17,7 @@ export default function RootLayout({
     <html lang="es">
       <body className="bg-black text-white font-mono antialiased">
         {children}
+        <Toaster />
       </body>
     </html>
   )

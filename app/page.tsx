@@ -8,6 +8,8 @@ import AgentNetworkPage from "./features/agent-network/page"
 import OperationsPage from "./features/operations/page"
 import IntelligencePage from "./features/intelligence/page"
 import SystemsPage from "./features/systems/page"
+import NuclearStrikePage from "./features/nuclear/page"
+import SnakeGamePage from "./features/snake/page"
 
 interface SidebarStats {
   systemsOnline: number
@@ -84,6 +86,8 @@ export default function TacticalDashboard() {
           {activeSection === "operations" && <OperationsPage />}
           {activeSection === "intelligence" && <IntelligencePage />}
           {activeSection === "systems" && <SystemsPage />}
+          {activeSection === "nuclear" && <NuclearStrikePage />}
+          {activeSection === "snake" && <SnakeGamePage />}
         </div>
       </div>
     </div>

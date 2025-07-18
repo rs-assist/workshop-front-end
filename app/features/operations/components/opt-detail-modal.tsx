@@ -1,8 +1,10 @@
 "use client"
 
+import { useState } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { useToast } from "@/components/ui/use-toast"
 
 interface ExtendedOperation {
   id: number
@@ -23,10 +25,46 @@ interface ExtendedOperation {
 interface OptDetailModalProps {
   operation: ExtendedOperation | null
   onClose: () => void
+  onOperationDeleted: () => void
 }
 
-export function OptDetailModal({ operation, onClose }: OptDetailModalProps) {
+export function OptDetailModal({ operation, onClose, onOperationDeleted }: OptDetailModalProps) {
+  const [isDeleting, setIsDeleting] = useState(false)
+  const { toast } = useToast()
+  
   if (!operation) return null
+
+  const handleDelete = async () => {
+    if (!operation) return
+
+    setIsDeleting(true)
+    try {
+      const response = await fetch(`/api/operations/${operation.id}`, {
+        method: 'DELETE',
+      })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete operation')
+      }
+
+      toast({
+        title: "Operation Deleted",
+        description: `Operation "${operation.name}" has been successfully deleted.`,
+      })
+
+      onClose()
+      onOperationDeleted()
+    } catch (error) {
+      console.error('Error deleting operation:', error)
+      toast({
+        title: "Error",
+        description: "Failed to delete operation. Please try again.",
+        variant: "destructive",
+      })
+    } finally {
+      setIsDeleting(false)
+    }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -161,6 +199,14 @@ export function OptDetailModal({ operation, onClose }: OptDetailModalProps) {
               className="border-neutral-700 text-neutral-400 hover:bg-neutral-800 hover:text-neutral-300 bg-transparent"
             >
               Assign Agents
+            </Button>
+            <Button
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isDeleting}
+              className="ml-auto"
+            >
+              {isDeleting ? "Deleting..." : "Delete Operation"}
             </Button>
           </div>
         </CardContent>
