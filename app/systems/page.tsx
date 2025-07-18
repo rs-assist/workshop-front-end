@@ -133,8 +133,13 @@ export default function SystemsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
+          {/* <PageTitle /> */}
           <h1 className="text-2xl font-bold text-white tracking-wider">SYSTEMS MONITOR</h1>
+          {/* End <PageTitle /> */}
+
+          {/* <PageSubtitle /> */}
           <p className="text-sm text-neutral-400">Infrastructure health and performance monitoring</p>
+          {/* End <PageSubtitle /> */}
         </div>
         <div className="flex gap-2">
           <Button className="bg-orange-500 hover:bg-orange-600 text-white">System Scan</Button>
@@ -144,6 +149,7 @@ export default function SystemsPage() {
 
       {/* System Overview Stats */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* <SysStats /> */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -155,7 +161,8 @@ export default function SystemsPage() {
             </div>
           </CardContent>
         </Card>
-
+        {/* End <SysStats /> */}
+        {/* <SysStats /> */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -167,7 +174,8 @@ export default function SystemsPage() {
             </div>
           </CardContent>
         </Card>
-
+        {/* End <SysStats /> */}
+        {/* <SysStats /> */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -179,7 +187,8 @@ export default function SystemsPage() {
             </div>
           </CardContent>
         </Card>
-
+        {/* End <SysStats /> */}
+        {/* <SysStats /> */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -192,8 +201,9 @@ export default function SystemsPage() {
           </CardContent>
         </Card>
       </div>
+      {/* End <SysStats /> */}
 
-      {/* Systems Grid */}
+      {/* <SysGrid /> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {systems.map((system) => (
           <Card
@@ -270,8 +280,9 @@ export default function SystemsPage() {
           </Card>
         ))}
       </div>
+      {/* End <SysGrid /> */}
 
-      {/* System Detail Modal */}
+      {/* <SysDetailModal /> */}
       {selectedSystem && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <Card className="bg-neutral-900 border-neutral-700 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -399,4 +410,5 @@ export default function SystemsPage() {
       )}
     </div>
   )
+  {/* End <SysDetailModal /> */}
 }

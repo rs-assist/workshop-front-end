@@ -65,8 +65,13 @@ export default function AgentNetworkPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
+          {/* <PageTitle /> */}
           <h1 className="text-2xl font-bold text-white tracking-wider">AGENT NETWORK</h1>
+          {/* End <PageTitle /> */}
+
+          {/* <PageSubtitle /> */}
           <p className="text-sm text-neutral-400">Manage and monitor field operatives</p>
+          {/* End <PageSubtitle /> */}
         </div>
         <div className="flex gap-2">
           <Button className="bg-orange-500 hover:bg-orange-600 text-white">Deploy Agent</Button>
@@ -77,8 +82,8 @@ export default function AgentNetworkPage() {
         </div>
       </div>
 
-      {/* Search and Stats */}
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
+        {/* <AgtSearch /> */}
         <Card className="lg:col-span-1 bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="relative">
@@ -92,7 +97,9 @@ export default function AgentNetworkPage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <AgtSearch /> */}
 
+        {/* AgtStats */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -106,7 +113,9 @@ export default function AgentNetworkPage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <AgtStats /> */}
 
+        {/* AgtStats */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -120,7 +129,9 @@ export default function AgentNetworkPage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <AgtStats /> */}
 
+        {/* AgtStats */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -135,8 +146,9 @@ export default function AgentNetworkPage() {
           </CardContent>
         </Card>
       </div>
+      {/* End <AgtStats /> */}
 
-      {/* Agent List */}
+      {/* <AgtList /> */}
       <Card className="bg-neutral-900 border-neutral-700">
         <CardHeader>
           <CardTitle className="text-sm font-medium text-neutral-300 tracking-wider">AGENT ROSTER</CardTitle>
@@ -216,8 +228,9 @@ export default function AgentNetworkPage() {
           </div>
         </CardContent>
       </Card>
+      {/* End <AgtList /> */}
 
-      {/* Agent Detail Modal */}
+      {/* <AgtDetail /> */}
       {selectedAgent && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <Card className="bg-neutral-900 border-neutral-700 w-full max-w-2xl">
@@ -295,6 +308,7 @@ export default function AgentNetworkPage() {
           </Card>
         </div>
       )}
+      {/* End <AgtDetail /> */}
     </div>
   )
 }

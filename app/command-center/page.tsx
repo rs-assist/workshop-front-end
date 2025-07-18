@@ -115,7 +115,7 @@ export default function CommandCenterPage() {
     <div className="p-6 space-y-6">
       {/* Main Dashboard Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
-        {/* Agent Status Overview */}
+        {/* <AgentStatusOverview /> */}
         <Card className="lg:col-span-4 bg-neutral-900 border-neutral-700">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-neutral-300 tracking-wider">AGENT ALLOCATION</CardTitle>
@@ -164,8 +164,9 @@ export default function CommandCenterPage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <AgentStatusOverview /> */}
 
-        {/* Activity Log */}
+        {/* <AgtActivityLog> */}
         <Card className="lg:col-span-4 bg-neutral-900 border-neutral-700">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-neutral-300 tracking-wider">ACTIVITY LOG</CardTitle>
@@ -219,8 +220,8 @@ export default function CommandCenterPage() {
             </div>
           </CardContent>
         </Card>
-
-        {/* Encrypted Chat Activity */}
+        {/* End <AgtActivityLog> */}
+        {/* <CmdChatActivity /> */}
         <Card className="lg:col-span-4 bg-neutral-900 border-neutral-700">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-neutral-300 tracking-wider">
@@ -255,8 +256,9 @@ export default function CommandCenterPage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <CmdChatActivity /> */}
 
-        {/* Mission Activity Chart */}
+        {/* <OptMissionActivityChart /> */}
         <Card className="lg:col-span-8 bg-neutral-900 border-neutral-700">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-neutral-300 tracking-wider">
@@ -305,8 +307,9 @@ export default function CommandCenterPage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <OptMissionActivityChart /> */}
 
-        {/* Mission Information */}
+        {/* <OptMissionInformation /> */}
         <Card className="lg:col-span-4 bg-neutral-900 border-neutral-700">
           <CardHeader className="pb-3">
             <CardTitle className="text-sm font-medium text-neutral-300 tracking-wider">MISSION INFORMATION</CardTitle>

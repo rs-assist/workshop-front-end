@@ -114,8 +114,13 @@ export default function OperationsPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
+          {/* <PageTitle /> */}
           <h1 className="text-2xl font-bold text-white tracking-wider">OPERATIONS CENTER</h1>
+          {/* End <PageTitle /> */}
+        
+          {/* <PageSubtitle /> */}
           <p className="text-sm text-neutral-400">Mission planning and execution oversight</p>
+          {/* End <PageSubtitle /> */}
         </div>
         <div className="flex gap-2">
           <Button className="bg-orange-500 hover:bg-orange-600 text-white">New Operation</Button>
@@ -123,8 +128,8 @@ export default function OperationsPage() {
         </div>
       </div>
 
-      {/* Stats Overview */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {/* OptStats */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -138,7 +143,8 @@ export default function OperationsPage() {
             </div>
           </CardContent>
         </Card>
-
+        {/* end OptStats */}
+        {/* OptStats */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -152,7 +158,8 @@ export default function OperationsPage() {
             </div>
           </CardContent>
         </Card>
-
+        {/* end OptStats */}
+        {/* OptStats */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -166,7 +173,8 @@ export default function OperationsPage() {
             </div>
           </CardContent>
         </Card>
-
+        {/* end OptStats */}
+        {/* OptStats */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -181,8 +189,9 @@ export default function OperationsPage() {
           </CardContent>
         </Card>
       </div>
+      {/* OptStats */}
 
-      {/* Operations List */}
+      {/* <OptList /> */}
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-6">
         {operations.map((operation) => (
           <Card
@@ -238,8 +247,9 @@ export default function OperationsPage() {
           </Card>
         ))}
       </div>
+      {/* End Operations List */}
 
-      {/* Operation Detail Modal */}
+      {/* <OptDetailModal /> */}
       {selectedOperation && (
         <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
           <Card className="bg-neutral-900 border-neutral-700 w-full max-w-4xl max-h-[90vh] overflow-y-auto">
@@ -351,4 +361,5 @@ export default function OperationsPage() {
       )}
     </div>
   )
+  {/* End Operation Detail Modal */}
 }

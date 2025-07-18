@@ -133,8 +133,12 @@ export default function CommandCenterPage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
+          {/* <PageTitle /> */}
           <h1 className="text-2xl font-bold text-white tracking-wider">COMMAND CENTER</h1>
+          {/* End <PageTitle /> */}
+          {/* <PageSubtitle /> */}
           <p className="text-sm text-neutral-400">Mission Control & Operations Hub</p>
+          {/* End <PageSubtitle /> */}
         </div>
         <div className="flex gap-2">
           <Button className="bg-orange-500 hover:bg-orange-600 text-white">New Mission</Button>

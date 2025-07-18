@@ -119,8 +119,13 @@ export default function IntelligencePage() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
+          {/* <PageTitle /> */}
           <h1 className="text-2xl font-bold text-white tracking-wider">INTELLIGENCE CENTER</h1>
+          {/* End <PageTitle /> */}
+
+          { /* <PageSubtitle /> */}
           <p className="text-sm text-neutral-400">Classified reports and threat analysis</p>
+          {/* End <PageSubtitle /> */}
         </div>
         <div className="flex gap-2">
           <Button className="bg-orange-500 hover:bg-orange-600 text-white">New Report</Button>
@@ -133,6 +138,7 @@ export default function IntelligencePage() {
 
       {/* Stats and Search */}
       <div className="grid grid-cols-1 lg:grid-cols-5 gap-4">
+        {/* <IntSearch /> */}
         <Card className="lg:col-span-2 bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="relative">
@@ -146,7 +152,9 @@ export default function IntelligencePage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <IntSearch /> */}
 
+        {/* <IntStats /> */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -158,7 +166,9 @@ export default function IntelligencePage() {
             </div>
           </CardContent>
         </Card>
+        {/* End <IntStats /> */}
 
+        {/* <IntStats /> */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -172,7 +182,8 @@ export default function IntelligencePage() {
             </div>
           </CardContent>
         </Card>
-
+        {/* end <IntStats /> */}
+        {/* <IntStats /> */}
         <Card className="bg-neutral-900 border-neutral-700">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -186,9 +197,10 @@ export default function IntelligencePage() {
             </div>
           </CardContent>
         </Card>
+        {/* end <IntStats /> */}
       </div>
 
-      {/* Intelligence Reports */}
+      {/* <IntReports /> */}
       <Card className="bg-neutral-900 border-neutral-700">
         <CardHeader>
           <CardTitle className="text-sm font-medium text-neutral-300 tracking-wider">INTELLIGENCE REPORTS</CardTitle>
@@ -374,4 +386,5 @@ export default function IntelligencePage() {
       )}
     </div>
   )
+  {/* End <IntReports /> */}
 }
