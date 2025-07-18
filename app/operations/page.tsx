@@ -5,6 +5,7 @@ import type { Operation } from "@/app/generated/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
+import { OperationsLoading } from "@/components/ui/operations-loading"
 import { Target, MapPin, Clock, Users, AlertTriangle, CheckCircle, XCircle } from "lucide-react"
 
 // Extended operation type with parsed objectives
@@ -22,6 +23,9 @@ export default function OperationsPage() {
   useEffect(() => {
     const fetchOperations = async () => {
       try {
+        // Add small delay to demonstrate loading state
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        
         const response = await fetch('/api/operations')
         if (!response.ok) {
           throw new Error('Failed to fetch operations')
@@ -47,13 +51,7 @@ export default function OperationsPage() {
   }, [])
 
   if (loading) {
-    return (
-      <div className="p-6 space-y-6">
-        <div className="flex items-center justify-center h-96">
-          <div className="text-white">Loading operations...</div>
-        </div>
-      </div>
-    )
+    return <OperationsLoading />
   }
 
   if (error) {

@@ -5,17 +5,23 @@ import type { Agent } from "@/app/generated/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { AgentNetworkLoading } from "@/components/ui/agent-network-loading"
 import { Search, Filter, MoreHorizontal, MapPin, Clock, Shield } from "lucide-react"
 
 export default function AgentNetworkPage() {
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
   const [agents, setAgents] = useState<Agent[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
   // Fetch agents from the API
   useEffect(() => {
     const fetchAgents = async () => {
       try {
+        // Add small delay to demonstrate loading state
+        await new Promise(resolve => setTimeout(resolve, 800))
+        
         const response = await fetch('/api/agents')
         if (!response.ok) {
           throw new Error('Failed to fetch agents')
@@ -24,11 +30,28 @@ export default function AgentNetworkPage() {
         setAgents(data)
       } catch (error) {
         console.error('Error fetching agents:', error)
+        setError('Failed to load agents')
+      } finally {
+        setLoading(false)
       }
     }
     
     fetchAgents()
   }, [])
+
+  if (loading) {
+    return <AgentNetworkLoading />
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-center h-96">
+          <div className="text-red-500">{error}</div>
+        </div>
+      </div>
+    )
+  }
 
 
   const filteredAgents = agents.filter(
