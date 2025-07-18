@@ -49,12 +49,18 @@ enum AgentStatus {
 }
 
 model Operation {
-  id          Int           @id @default(autoincrement())
-  name        String
-  status      OperationStatus
-  priority    OperationPriority
-  progress    Int
-  description String
+  id                  Int           @id @default(autoincrement())
+  name                String
+  status              OperationStatus
+  priority            OperationPriority
+  progress            Int
+  description         String
+  location            String
+  agents              Int
+  startDate           String
+  estimatedCompletion String
+  objectives          String // JSON string of objectives array
+  displayId           String? // Optional custom display ID
 }
 
 enum OperationStatus {

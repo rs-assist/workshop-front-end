@@ -1,98 +1,87 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import type { Operation } from "@/app/generated/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Target, MapPin, Clock, Users, AlertTriangle, CheckCircle, XCircle } from "lucide-react"
 
+// Extended operation type with parsed objectives
+interface ExtendedOperation extends Operation {
+  parsedObjectives: string[]
+}
+
 export default function OperationsPage() {
-  const [selectedOperation, setSelectedOperation] = useState(null)
+  const [selectedOperation, setSelectedOperation] = useState<ExtendedOperation | null>(null)
+  const [operations, setOperations] = useState<ExtendedOperation[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const operations = [
-    {
-      id: "OP-OMEGA-001",
-      name: "SHADOW PROTOCOL",
-      status: "active",
-      priority: "critical",
-      location: "Eastern Europe",
-      agents: 5,
-      progress: 75,
-      startDate: "2025-06-15",
-      estimatedCompletion: "2025-06-30",
-      description: "Track high-value target in Eastern Europe",
-      objectives: ["Locate target", "Establish surveillance", "Extract intelligence"],
-    },
-    {
-      id: "OP-DELTA-002",
-      name: "GHOST FIRE",
-      status: "planning",
-      priority: "high",
-      location: "Seoul",
-      agents: 3,
-      progress: 25,
-      startDate: "2025-06-20",
-      estimatedCompletion: "2025-07-05",
-      description: "Infiltrate cybercrime network in Seoul",
-      objectives: ["Penetrate network", "Gather evidence", "Identify key players"],
-    },
-    {
-      id: "OP-SIERRA-003",
-      name: "NIGHT STALKER",
-      status: "completed",
-      priority: "medium",
-      location: "Berlin",
-      agents: 2,
-      progress: 100,
-      startDate: "2025-05-28",
-      estimatedCompletion: "2025-06-12",
-      description: "Monitor rogue agent communications in Berlin",
-      objectives: ["Intercept communications", "Decode messages", "Report findings"],
-    },
-    {
-      id: "OP-ALPHA-004",
-      name: "CRIMSON TIDE",
-      status: "active",
-      priority: "high",
-      location: "Cairo",
-      agents: 4,
-      progress: 60,
-      startDate: "2025-06-10",
-      estimatedCompletion: "2025-06-25",
-      description: "Support covert extraction in South America",
-      objectives: ["Secure extraction point", "Neutralize threats", "Extract asset"],
-    },
-    {
-      id: "OP-BRAVO-005",
-      name: "SILENT BLADE",
-      status: "compromised",
-      priority: "critical",
-      location: "Moscow",
-      agents: 6,
-      progress: 40,
-      startDate: "2025-06-05",
-      estimatedCompletion: "2025-06-20",
-      description: "Monitor rogue agent communications in Berlin",
-      objectives: ["Assess compromise", "Extract personnel", "Damage control"],
-    },
-  ]
+  // Fetch operations from the API
+  useEffect(() => {
+    const fetchOperations = async () => {
+      try {
+        const response = await fetch('/api/operations')
+        if (!response.ok) {
+          throw new Error('Failed to fetch operations')
+        }
+        const data: Operation[] = await response.json()
+        
+        // Transform API data to parse objectives
+        const transformedOperations: ExtendedOperation[] = data.map((op) => ({
+          ...op,
+          parsedObjectives: JSON.parse(op.objectives || '[]'),
+        }))
+        
+        setOperations(transformedOperations)
+      } catch (error) {
+        console.error('Error fetching operations:', error)
+        setError('Failed to load operations')
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    fetchOperations()
+  }, [])
 
-  const getStatusColor = (status) => {
+  if (loading) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-center h-96">
+          <div className="text-white">Loading operations...</div>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="p-6 space-y-6">
+        <div className="flex items-center justify-center h-96">
+          <div className="text-red-500">{error}</div>
+        </div>
+      </div>
+    )
+  }
+
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
         return "bg-white/20 text-white"
       case "planning":
         return "bg-orange-500/20 text-orange-500"
       case "completed":
-        return "bg-white/20 text-white"
-      case "compromised":
-        return "bg-red-500/20 text-red-500"
+        return "bg-green-500/20 text-green-500"
+      case "on_hold":
+        return "bg-yellow-500/20 text-yellow-500"
       default:
         return "bg-neutral-500/20 text-neutral-300"
     }
   }
 
-  const getPriorityColor = (priority) => {
+  const getPriorityColor = (priority: string) => {
     switch (priority) {
       case "critical":
         return "bg-red-500/20 text-red-500"
@@ -107,7 +96,7 @@ export default function OperationsPage() {
     }
   }
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
         return <Target className="w-4 h-4" />
@@ -115,7 +104,7 @@ export default function OperationsPage() {
         return <Clock className="w-4 h-4" />
       case "completed":
         return <CheckCircle className="w-4 h-4" />
-      case "compromised":
+      case "on_hold":
         return <XCircle className="w-4 h-4" />
       default:
         return <AlertTriangle className="w-4 h-4" />
@@ -143,7 +132,9 @@ export default function OperationsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">ACTIVE OPS</p>
-                <p className="text-2xl font-bold text-white font-mono">23</p>
+                <p className="text-2xl font-bold text-white font-mono">
+                  {operations.filter(op => op.status === 'active').length}
+                </p>
               </div>
               <Target className="w-8 h-8 text-white" />
             </div>
@@ -155,7 +146,9 @@ export default function OperationsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">COMPLETED</p>
-                <p className="text-2xl font-bold text-white font-mono">156</p>
+                <p className="text-2xl font-bold text-white font-mono">
+                  {operations.filter(op => op.status === 'completed').length}
+                </p>
               </div>
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
@@ -166,10 +159,12 @@ export default function OperationsPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-neutral-400 tracking-wider">COMPROMISED</p>
-                <p className="text-2xl font-bold text-red-500 font-mono">2</p>
+                <p className="text-xs text-neutral-400 tracking-wider">ON HOLD</p>
+                <p className="text-2xl font-bold text-orange-500 font-mono">
+                  {operations.filter(op => op.status === 'on_hold').length}
+                </p>
               </div>
-              <XCircle className="w-8 h-8 text-red-500" />
+              <XCircle className="w-8 h-8 text-orange-500" />
             </div>
           </CardContent>
         </Card>
@@ -179,7 +174,9 @@ export default function OperationsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">SUCCESS RATE</p>
-                <p className="text-2xl font-bold text-white font-mono">94%</p>
+                <p className="text-2xl font-bold text-white font-mono">
+                  {operations.length > 0 ? Math.round((operations.filter(op => op.status === 'completed').length / operations.length) * 100) : 0}%
+                </p>
               </div>
               <AlertTriangle className="w-8 h-8 text-white" />
             </div>
@@ -199,7 +196,7 @@ export default function OperationsPage() {
               <div className="flex items-start justify-between">
                 <div>
                   <CardTitle className="text-sm font-bold text-white tracking-wider">{operation.name}</CardTitle>
-                  <p className="text-xs text-neutral-400 font-mono">{operation.id}</p>
+                  <p className="text-xs text-neutral-400 font-mono">{operation.displayId || `OP-${operation.id.toString().padStart(3, '0')}`}</p>
                 </div>
                 <div className="flex items-center gap-2">{getStatusIcon(operation.status)}</div>
               </div>
@@ -251,7 +248,7 @@ export default function OperationsPage() {
             <CardHeader className="flex flex-row items-center justify-between">
               <div>
                 <CardTitle className="text-xl font-bold text-white tracking-wider">{selectedOperation.name}</CardTitle>
-                <p className="text-sm text-neutral-400 font-mono">{selectedOperation.id}</p>
+                <p className="text-sm text-neutral-400 font-mono">{selectedOperation.displayId || `OP-${selectedOperation.id.toString().padStart(3, '0')}`}</p>
               </div>
               <Button
                 variant="ghost"
@@ -319,7 +316,7 @@ export default function OperationsPage() {
                   <div>
                     <h3 className="text-sm font-medium text-neutral-300 tracking-wider mb-2">OBJECTIVES</h3>
                     <div className="space-y-2">
-                      {selectedOperation.objectives.map((objective, index) => (
+                      {selectedOperation.parsedObjectives.map((objective: string, index: number) => (
                         <div key={index} className="flex items-center gap-2 text-sm">
                           <div className="w-2 h-2 bg-orange-500 rounded-full"></div>
                           <span className="text-neutral-300">{objective}</span>
