@@ -12,18 +12,25 @@ datasource db {
 }
 
 model Server {
-  id       Int    @id @default(autoincrement())
-  name     String
-  status   ServerStatus
-  cpu      Int
-  memory   Int
-  location String
+  id              Int          @id @default(autoincrement())
+  name            String
+  status          ServerStatus
+  cpu             Int
+  memory          Int
+  location        String
+  type            String       // Primary Server, Database, Firewall, etc.
+  health          Int          // Health percentage
+  storage         Int          // Storage usage percentage
+  uptime          String       // Uptime string like "247 days"
+  lastMaintenance String       // Last maintenance date
+  displayId       String?      // Optional custom display ID
 }
 
 enum ServerStatus {
   online
   maintenance
   offline
+  warning
 }
 
 model Agent {
@@ -78,18 +85,45 @@ enum OperationPriority {
 }
 
 model Intelligence {
-  id             Int    @id @default(autoincrement())
+  id             Int              @id @default(autoincrement())
   title          String
   location       String
   priority       OperationPriority
   classification Classification
   sources        Int
+  source         IntelligenceSource
+  date           String
+  status         IntelligenceStatus
+  threat         ThreatLevel
+  summary        String
+  tags           String           // JSON string of tags array
+  displayId      String?          // Optional custom display ID
 }
 
 enum Classification {
   classified
   secret
   top_secret
+}
+
+enum IntelligenceSource {
+  SIGINT
+  HUMINT
+  OSINT
+  DIPLOMATIC
+}
+
+enum IntelligenceStatus {
+  verified
+  pending
+  active
+}
+
+enum ThreatLevel {
+  low
+  medium
+  high
+  critical
 }
 
 model ActivityLog {

@@ -1,10 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Progress } from "@/components/ui/progress"
+import { SystemsLoading } from "@/components/ui/systems-loading"
 import {
   Server,
   Database,
@@ -18,91 +19,52 @@ import {
   Settings,
 } from "lucide-react"
 
+interface System {
+  id: string
+  displayId: string
+  name: string
+  type: string
+  status: string
+  health: number
+  cpu: number
+  memory: number
+  storage: number
+  uptime: string
+  location: string
+  lastMaintenance: string
+  createdAt: string
+  updatedAt: string
+}
+
 export default function SystemsPage() {
-  const [selectedSystem, setSelectedSystem] = useState(null)
+  const [selectedSystem, setSelectedSystem] = useState<System | null>(null)
+  const [systems, setSystems] = useState<System[]>([])
+  const [loading, setLoading] = useState(true)
 
-  const systems = [
-    {
-      id: "SYS-001",
-      name: "COMMAND SERVER ALPHA",
-      type: "Primary Server",
-      status: "online",
-      health: 98,
-      cpu: 45,
-      memory: 67,
-      storage: 34,
-      uptime: "247 days",
-      location: "Data Center 1",
-      lastMaintenance: "2025-05-15",
-    },
-    {
-      id: "SYS-002",
-      name: "DATABASE CLUSTER BETA",
-      type: "Database",
-      status: "online",
-      health: 95,
-      cpu: 72,
-      memory: 84,
-      storage: 78,
-      uptime: "189 days",
-      location: "Data Center 2",
-      lastMaintenance: "2025-06-01",
-    },
-    {
-      id: "SYS-003",
-      name: "SECURITY GATEWAY",
-      type: "Firewall",
-      status: "warning",
-      health: 87,
-      cpu: 23,
-      memory: 45,
-      storage: 12,
-      uptime: "156 days",
-      location: "DMZ",
-      lastMaintenance: "2025-04-20",
-    },
-    {
-      id: "SYS-004",
-      name: "COMMUNICATION HUB",
-      type: "Network",
-      status: "online",
-      health: 92,
-      cpu: 38,
-      memory: 52,
-      storage: 23,
-      uptime: "203 days",
-      location: "Network Core",
-      lastMaintenance: "2025-05-28",
-    },
-    {
-      id: "SYS-005",
-      name: "BACKUP STORAGE ARRAY",
-      type: "Storage",
-      status: "maintenance",
-      health: 76,
-      cpu: 15,
-      memory: 28,
-      storage: 89,
-      uptime: "0 days",
-      location: "Backup Facility",
-      lastMaintenance: "2025-06-17",
-    },
-    {
-      id: "SYS-006",
-      name: "ANALYTICS ENGINE",
-      type: "Processing",
-      status: "online",
-      health: 94,
-      cpu: 89,
-      memory: 76,
-      storage: 45,
-      uptime: "134 days",
-      location: "Data Center 1",
-      lastMaintenance: "2025-05-10",
-    },
-  ]
+  useEffect(() => {
+    const fetchSystems = async () => {
+      try {
+        const response = await fetch('/api/servers')
+        if (!response.ok) {
+          throw new Error('Failed to fetch systems')
+        }
+        const data = await response.json()
+        setSystems(data)
+      } catch (error) {
+        console.error('Error fetching systems:', error)
+      } finally {
+        setLoading(false)
+      }
+    }
 
-  const getStatusColor = (status) => {
+    fetchSystems()
+  }, [])
+
+  if (loading) {
+    return <SystemsLoading />
+  }
+
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "online":
         return "bg-white/20 text-white"
@@ -117,7 +79,7 @@ export default function SystemsPage() {
     }
   }
 
-  const getStatusIcon = (status) => {
+  const getStatusIcon = (status: string) => {
     switch (status) {
       case "online":
         return <CheckCircle className="w-4 h-4" />
@@ -132,7 +94,7 @@ export default function SystemsPage() {
     }
   }
 
-  const getSystemIcon = (type) => {
+  const getSystemIcon = (type: string) => {
     switch (type) {
       case "Primary Server":
         return <Server className="w-6 h-6" />
@@ -151,7 +113,15 @@ export default function SystemsPage() {
     }
   }
 
-  const getHealthColor = (health) => {
+  // Calculate dynamic stats from systems data
+  const totalSystems = systems.length
+  const onlineSystems = systems.filter(s => s.status === 'online').length
+  const warningSystems = systems.filter(s => s.status === 'warning').length
+  const maintenanceSystems = systems.filter(s => s.status === 'maintenance').length
+  const avgUptime = systems.length > 0 ? 
+    (systems.reduce((sum, s) => sum + (s.status === 'online' ? 100 : 0), 0) / systems.length).toFixed(1) : '0.0'
+
+  const getHealthColor = (health: number) => {
     if (health >= 95) return "text-white"
     if (health >= 85) return "text-white"
     if (health >= 70) return "text-orange-500"
@@ -179,7 +149,7 @@ export default function SystemsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">SYSTEMS ONLINE</p>
-                <p className="text-2xl font-bold text-white font-mono">24/26</p>
+                <p className="text-2xl font-bold text-white font-mono">{onlineSystems}/{totalSystems}</p>
               </div>
               <CheckCircle className="w-8 h-8 text-white" />
             </div>
@@ -191,7 +161,7 @@ export default function SystemsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">WARNINGS</p>
-                <p className="text-2xl font-bold text-orange-500 font-mono">3</p>
+                <p className="text-2xl font-bold text-orange-500 font-mono">{warningSystems}</p>
               </div>
               <AlertTriangle className="w-8 h-8 text-orange-500" />
             </div>
@@ -203,7 +173,7 @@ export default function SystemsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">AVG UPTIME</p>
-                <p className="text-2xl font-bold text-white font-mono">99.7%</p>
+                <p className="text-2xl font-bold text-white font-mono">{avgUptime}%</p>
               </div>
               <Activity className="w-8 h-8 text-white" />
             </div>
@@ -215,7 +185,7 @@ export default function SystemsPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">MAINTENANCE</p>
-                <p className="text-2xl font-bold text-neutral-300 font-mono">1</p>
+                <p className="text-2xl font-bold text-neutral-300 font-mono">{maintenanceSystems}</p>
               </div>
               <Settings className="w-8 h-8 text-neutral-300" />
             </div>
@@ -311,7 +281,7 @@ export default function SystemsPage() {
                 <div>
                   <CardTitle className="text-xl font-bold text-white tracking-wider">{selectedSystem.name}</CardTitle>
                   <p className="text-sm text-neutral-400">
-                    {selectedSystem.id} • {selectedSystem.type}
+                    {selectedSystem.displayId} • {selectedSystem.type}
                   </p>
                 </div>
               </div>

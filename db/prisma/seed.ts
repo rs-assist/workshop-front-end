@@ -1,5 +1,5 @@
 import { PrismaClient } from '../../app/generated/prisma'
-import { ServerStatus, RiskLevel, AgentStatus, OperationStatus, OperationPriority, Classification, ActivityType } from '../../app/generated/prisma'
+import { ServerStatus, RiskLevel, AgentStatus, OperationStatus, OperationPriority, Classification, ActivityType, IntelligenceSource, IntelligenceStatus, ThreatLevel } from '../../app/generated/prisma'
 
 const prisma = new PrismaClient()
 
@@ -15,18 +15,82 @@ async function main() {
   await prisma.server.createMany({
     data: [
       {
-        name: "Neo-Tokyo-01",
+        name: "COMMAND SERVER ALPHA",
         status: ServerStatus.online,
-        cpu: 85,
-        memory: 64,
-        location: "Neo-Tokyo"
+        cpu: 45,
+        memory: 67,
+        location: "Data Center 1",
+        type: "Primary Server",
+        health: 98,
+        storage: 34,
+        uptime: "247 days",
+        lastMaintenance: "2025-05-15",
+        displayId: "SYS-001"
       },
       {
-        name: "Night-City-Edge",
+        name: "DATABASE CLUSTER BETA",
+        status: ServerStatus.online,
+        cpu: 72,
+        memory: 84,
+        location: "Data Center 2",
+        type: "Database",
+        health: 95,
+        storage: 78,
+        uptime: "189 days",
+        lastMaintenance: "2025-06-01",
+        displayId: "SYS-002"
+      },
+      {
+        name: "SECURITY GATEWAY",
+        status: ServerStatus.warning,
+        cpu: 23,
+        memory: 45,
+        location: "DMZ",
+        type: "Firewall",
+        health: 87,
+        storage: 12,
+        uptime: "156 days",
+        lastMaintenance: "2025-04-20",
+        displayId: "SYS-003"
+      },
+      {
+        name: "COMMUNICATION HUB",
+        status: ServerStatus.online,
+        cpu: 38,
+        memory: 52,
+        location: "Network Core",
+        type: "Network",
+        health: 92,
+        storage: 23,
+        uptime: "203 days",
+        lastMaintenance: "2025-05-28",
+        displayId: "SYS-004"
+      },
+      {
+        name: "BACKUP STORAGE ARRAY",
         status: ServerStatus.maintenance,
-        cpu: 32,
-        memory: 128,
-        location: "Night City"
+        cpu: 15,
+        memory: 28,
+        location: "Backup Facility",
+        type: "Storage",
+        health: 76,
+        storage: 89,
+        uptime: "0 days",
+        lastMaintenance: "2025-06-17",
+        displayId: "SYS-005"
+      },
+      {
+        name: "ANALYTICS ENGINE",
+        status: ServerStatus.online,
+        cpu: 89,
+        memory: 76,
+        location: "Data Center 1",
+        type: "Processing",
+        health: 94,
+        storage: 45,
+        uptime: "134 days",
+        lastMaintenance: "2025-05-10",
+        displayId: "SYS-006"
       }
     ]
   })
@@ -126,18 +190,74 @@ async function main() {
   await prisma.intelligence.createMany({
     data: [
       {
-        title: "Corporate Defense Patterns",
-        location: "Neo-Tokyo",
+        title: "CYBERCRIME NETWORK ANALYSIS",
+        location: "Eastern Europe",
         priority: OperationPriority.high,
         classification: Classification.top_secret,
-        sources: 5
+        sources: 5,
+        source: IntelligenceSource.SIGINT,
+        date: "2025-06-17",
+        status: IntelligenceStatus.verified,
+        threat: ThreatLevel.high,
+        summary: "Detailed analysis of emerging cybercrime syndicate operating across multiple jurisdictions",
+        tags: JSON.stringify(["cybercrime", "international", "financial"]),
+        displayId: "INT-2025-001"
       },
       {
-        title: "Network Vulnerability Report",
-        location: "Night City",
-        priority: OperationPriority.medium,
+        title: "ROGUE AGENT COMMUNICATIONS",
+        location: "Berlin",
+        priority: OperationPriority.critical,
         classification: Classification.secret,
-        sources: 3
+        sources: 3,
+        source: IntelligenceSource.HUMINT,
+        date: "2025-06-16",
+        status: IntelligenceStatus.pending,
+        threat: ThreatLevel.critical,
+        summary: "Intercepted communications suggesting potential security breach in European operations",
+        tags: JSON.stringify(["internal", "security", "communications"]),
+        displayId: "INT-2025-002"
+      },
+      {
+        title: "ARMS TRAFFICKING ROUTES",
+        location: "Middle East",
+        priority: OperationPriority.medium,
+        classification: Classification.classified,
+        sources: 4,
+        source: IntelligenceSource.OSINT,
+        date: "2025-06-15",
+        status: IntelligenceStatus.verified,
+        threat: ThreatLevel.medium,
+        summary: "Updated intelligence on weapons smuggling corridors through Mediterranean region",
+        tags: JSON.stringify(["trafficking", "weapons", "maritime"]),
+        displayId: "INT-2025-003"
+      },
+      {
+        title: "TERRORIST CELL SURVEILLANCE",
+        location: "North Africa",
+        priority: OperationPriority.critical,
+        classification: Classification.top_secret,
+        sources: 6,
+        source: IntelligenceSource.HUMINT,
+        date: "2025-06-14",
+        status: IntelligenceStatus.active,
+        threat: ThreatLevel.critical,
+        summary: "Ongoing surveillance of suspected terrorist cell planning coordinated attacks",
+        tags: JSON.stringify(["terrorism", "surveillance", "coordinated"]),
+        displayId: "INT-2025-004"
+      },
+      {
+        title: "DIPLOMATIC INTELLIGENCE BRIEF",
+        location: "Asia Pacific",
+        priority: OperationPriority.low,
+        classification: Classification.secret,
+        sources: 2,
+        source: IntelligenceSource.DIPLOMATIC,
+        date: "2025-06-13",
+        status: IntelligenceStatus.verified,
+        threat: ThreatLevel.low,
+        summary: "Political developments affecting regional security and operational considerations",
+        tags: JSON.stringify(["diplomatic", "political", "regional"]),
+        displayId: "INT-2025-005"
       }
     ]
   })
