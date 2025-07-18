@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { ChevronRight, Monitor, Settings, Shield, Target, Users, Bell, RefreshCw } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import CommandCenterPage from "./command-center/page"
@@ -9,9 +9,54 @@ import OperationsPage from "./operations/page"
 import IntelligencePage from "./intelligence/page"
 import SystemsPage from "./systems/page"
 
+interface SidebarStats {
+  systemsOnline: number
+  totalSystems: number
+  activeAgents: number
+  ongoingMissions: number
+}
+
 export default function TacticalDashboard() {
   const [activeSection, setActiveSection] = useState("overview")
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
+  const [sidebarStats, setSidebarStats] = useState<SidebarStats>({
+    systemsOnline: 0,
+    totalSystems: 0,
+    activeAgents: 0,
+    ongoingMissions: 0
+  })
+
+  useEffect(() => {
+    const fetchSidebarStats = async () => {
+      try {
+        // Fetch systems data
+        const systemsResponse = await fetch('/api/servers')
+        const systemsData = await systemsResponse.json()
+        const onlineSystems = systemsData.filter((s: any) => s.status === 'online').length
+        
+        // Fetch agents data
+        const agentsResponse = await fetch('/api/agents')
+        const agentsData = await agentsResponse.json()
+        const activeAgents = agentsData.filter((a: any) => a.status === 'active').length
+        
+        // Fetch operations data
+        const operationsResponse = await fetch('/api/operations')
+        const operationsData = await operationsResponse.json()
+        const ongoingMissions = operationsData.filter((o: any) => o.status === 'active').length
+        
+        setSidebarStats({
+          systemsOnline: onlineSystems,
+          totalSystems: systemsData.length,
+          activeAgents: activeAgents,
+          ongoingMissions: ongoingMissions
+        })
+      } catch (error) {
+        console.error('Error fetching sidebar stats:', error)
+      }
+    }
+
+    fetchSidebarStats()
+  }, [])
 
   return (
     <div className="flex h-screen">
@@ -67,9 +112,9 @@ export default function TacticalDashboard() {
                 <span className="text-xs text-white">SYSTEM ONLINE</span>
               </div>
               <div className="text-xs text-neutral-500">
-                <div>UPTIME: 72:14:33</div>
-                <div>AGENTS: 847 ACTIVE</div>
-                <div>MISSIONS: 23 ONGOING</div>
+                <div>SYSTEMS: {sidebarStats.systemsOnline}/{sidebarStats.totalSystems} ONLINE</div>
+                <div>AGENTS: {sidebarStats.activeAgents} ACTIVE</div>
+                <div>MISSIONS: {sidebarStats.ongoingMissions} ONGOING</div>
               </div>
             </div>
           )}
