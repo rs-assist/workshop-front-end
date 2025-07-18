@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import type { Agent } from "@/app/generated/prisma"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -8,87 +9,32 @@ import { Search, Filter, MoreHorizontal, MapPin, Clock, Shield } from "lucide-re
 
 export default function AgentNetworkPage() {
   const [searchTerm, setSearchTerm] = useState("")
-  const [selectedAgent, setSelectedAgent] = useState(null)
+  const [selectedAgent, setSelectedAgent] = useState<Agent | null>(null)
+  const [agents, setAgents] = useState<Agent[]>([])
 
-  const agents = [
-    {
-      id: "G-078W",
-      name: "VENGEFUL SPIRIT",
-      status: "active",
-      location: "Berlin",
-      lastSeen: "2 min ago",
-      missions: 47,
-      risk: "high",
-    },
-    {
-      id: "G-079X",
-      name: "OBSIDIAN SENTINEL",
-      status: "standby",
-      location: "Tokyo",
-      lastSeen: "15 min ago",
-      missions: 32,
-      risk: "medium",
-    },
-    {
-      id: "G-080Y",
-      name: "GHOSTLY FURY",
-      status: "active",
-      location: "Cairo",
-      lastSeen: "1 min ago",
-      missions: 63,
-      risk: "high",
-    },
-    {
-      id: "G-081Z",
-      name: "CURSED REVENANT",
-      status: "compromised",
-      location: "Moscow",
-      lastSeen: "3 hours ago",
-      missions: 28,
-      risk: "critical",
-    },
-    {
-      id: "G-082A",
-      name: "VENOMOUS SHADE",
-      status: "active",
-      location: "London",
-      lastSeen: "5 min ago",
-      missions: 41,
-      risk: "medium",
-    },
-    {
-      id: "G-083B",
-      name: "MYSTIC ENIGMA",
-      status: "training",
-      location: "Base Alpha",
-      lastSeen: "1 day ago",
-      missions: 12,
-      risk: "low",
-    },
-    {
-      id: "G-084C",
-      name: "WRAITH AVENGER",
-      status: "active",
-      location: "Paris",
-      lastSeen: "8 min ago",
-      missions: 55,
-      risk: "high",
-    },
-    {
-      id: "G-085D",
-      name: "SPECTRAL FURY",
-      status: "standby",
-      location: "Sydney",
-      lastSeen: "22 min ago",
-      missions: 38,
-      risk: "medium",
-    },
-  ]
+  // Fetch agents from the API
+  useEffect(() => {
+    const fetchAgents = async () => {
+      try {
+        const response = await fetch('/api/agents')
+        if (!response.ok) {
+          throw new Error('Failed to fetch agents')
+        }
+        const data = await response.json()
+        setAgents(data)
+      } catch (error) {
+        console.error('Error fetching agents:', error)
+      }
+    }
+    
+    fetchAgents()
+  }, [])
+
 
   const filteredAgents = agents.filter(
     (agent) =>
       agent.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      agent.id.toLowerCase().includes(searchTerm.toLowerCase()),
+      `AG-${agent.id.toString().padStart(4, '0')}`.toLowerCase().includes(searchTerm.toLowerCase()),
   )
 
   return (
@@ -129,7 +75,9 @@ export default function AgentNetworkPage() {
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-xs text-neutral-400 tracking-wider">ACTIVE AGENTS</p>
-                <p className="text-2xl font-bold text-white font-mono">847</p>
+                <p className="text-2xl font-bold text-white font-mono">
+                  {agents.filter(agent => agent.status === "active").length}
+                </p>
               </div>
               <Shield className="w-8 h-8 text-white" />
             </div>
@@ -140,8 +88,10 @@ export default function AgentNetworkPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-neutral-400 tracking-wider">COMPROMISED</p>
-                <p className="text-2xl font-bold text-red-500 font-mono">3</p>
+                <p className="text-xs text-neutral-400 tracking-wider">HIGH RISK</p>
+                <p className="text-2xl font-bold text-red-500 font-mono">
+                  {agents.filter(agent => agent.risk === "critical" || agent.risk === "high").length}
+                </p>
               </div>
               <Shield className="w-8 h-8 text-red-500" />
             </div>
@@ -152,8 +102,10 @@ export default function AgentNetworkPage() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-xs text-neutral-400 tracking-wider">IN TRAINING</p>
-                <p className="text-2xl font-bold text-orange-500 font-mono">23</p>
+                <p className="text-xs text-neutral-400 tracking-wider">STANDBY</p>
+                <p className="text-2xl font-bold text-orange-500 font-mono">
+                  {agents.filter(agent => agent.status === "standby").length}
+                </p>
               </div>
               <Shield className="w-8 h-8 text-orange-500" />
             </div>
@@ -175,8 +127,7 @@ export default function AgentNetworkPage() {
                   <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">CODENAME</th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">STATUS</th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">LOCATION</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">LAST SEEN</th>
-                  <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">MISSIONS</th>
+                  <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">MISSION</th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">RISK</th>
                   <th className="text-left py-3 px-4 text-xs font-medium text-neutral-400 tracking-wider">ACTIONS</th>
                 </tr>
@@ -190,7 +141,7 @@ export default function AgentNetworkPage() {
                     }`}
                     onClick={() => setSelectedAgent(agent)}
                   >
-                    <td className="py-3 px-4 text-sm text-white font-mono">{agent.id}</td>
+                    <td className="py-3 px-4 text-sm text-white font-mono">AG-{agent.id.toString().padStart(4, '0')}</td>
                     <td className="py-3 px-4 text-sm text-white">{agent.name}</td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
@@ -200,9 +151,7 @@ export default function AgentNetworkPage() {
                               ? "bg-white"
                               : agent.status === "standby"
                                 ? "bg-neutral-500"
-                                : agent.status === "training"
-                                  ? "bg-orange-500"
-                                  : "bg-red-500"
+                                : "bg-red-500"
                           }`}
                         ></div>
                         <span className="text-xs text-neutral-300 uppercase tracking-wider">{agent.status}</span>
@@ -215,12 +164,8 @@ export default function AgentNetworkPage() {
                       </div>
                     </td>
                     <td className="py-3 px-4">
-                      <div className="flex items-center gap-2">
-                        <Clock className="w-3 h-3 text-neutral-400" />
-                        <span className="text-sm text-neutral-300 font-mono">{agent.lastSeen}</span>
-                      </div>
+                      <span className="text-sm text-neutral-300">{agent.mission}</span>
                     </td>
-                    <td className="py-3 px-4 text-sm text-white font-mono">{agent.missions}</td>
                     <td className="py-3 px-4">
                       <span
                         className={`text-xs px-2 py-1 rounded uppercase tracking-wider ${
@@ -277,9 +222,7 @@ export default function AgentNetworkPage() {
                           ? "bg-white"
                           : selectedAgent.status === "standby"
                             ? "bg-neutral-500"
-                            : selectedAgent.status === "training"
-                              ? "bg-orange-500"
-                              : "bg-red-500"
+                            : "bg-red-500"
                       }`}
                     ></div>
                     <span className="text-sm text-white uppercase tracking-wider">{selectedAgent.status}</span>
@@ -290,8 +233,8 @@ export default function AgentNetworkPage() {
                   <p className="text-sm text-white">{selectedAgent.location}</p>
                 </div>
                 <div>
-                  <p className="text-xs text-neutral-400 tracking-wider mb-1">MISSIONS COMPLETED</p>
-                  <p className="text-sm text-white font-mono">{selectedAgent.missions}</p>
+                  <p className="text-xs text-neutral-400 tracking-wider mb-1">CURRENT MISSION</p>
+                  <p className="text-sm text-white">{selectedAgent.mission}</p>
                 </div>
                 <div>
                   <p className="text-xs text-neutral-400 tracking-wider mb-1">RISK LEVEL</p>
